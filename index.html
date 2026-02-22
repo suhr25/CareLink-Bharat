@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CareLink Bharat — Voice Navigation Guide</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -15,105 +15,276 @@
 
 <body>
 
-    <nav class="navbar">
-        <div class="logo-group">
-            <div class="logo-icon">🤝</div>
-            <div class="logo-text">CareLink <span>Bharat</span></div>
+    <!-- ══════════════════════════════════════════════════
+         LOGIN SCREEN (shown before authentication)
+    ══════════════════════════════════════════════════ -->
+    <div id="loginScreen">
+
+        <!-- Transition ripple overlay (fires on login success) -->
+        <div class="page-transition-out" id="pageTransitionOut">
+            <div class="pt-ripple"></div>
+            <div class="pt-text">Welcome to CareLink Bharat</div>
         </div>
-        <div class="nav-actions">
-            <button class="nav-btn lang-toggle" id="langToggle">EN / हि</button>
-            <button class="nav-btn" id="fontToggle">Aa+</button>
-            <button class="nav-btn">📋 History</button>
-        </div>
-    </nav>
 
-    <main class="main-container">
+        <!-- Three.js canvas for login animation (injected by script.js) -->
 
-        <section class="hero">
-            <div class="hero-badge">🎙️ Voice-Guided Assistance</div>
-            <h1>Need help with something?<br><span class="highlight">Just ask. We'll guide you.</span></h1>
-            <p>Speak or type your question and get simple, step-by-step guidance — read aloud for you.</p>
-        </section>
+        <div class="login-overlay">
 
-        <section class="query-section">
-            <div class="query-box" id="queryBox">
-                <input type="text" class="query-input" id="queryInput"
-                    placeholder="Ask anything… e.g. 'How to send a WhatsApp photo?'">
-                <button class="mic-btn" id="micBtn">🎤</button>
-                <button class="submit-btn" id="submitBtn">➜</button>
+            <div class="brand-top">
+                <div class="brand-name">CareLink <span>Bharat</span></div>
+                <div class="brand-tagline">Voice-Guided Digital Assistance</div>
             </div>
-            <div class="mic-status" id="micStatus"></div>
-            <p class="query-hint" id="queryHint">💡 Try: <strong>"How do I pay an electricity bill online?"</strong></p>
-        </section>
 
-        <section class="progress-section" id="progressSection">
-            <div class="progress-header">
-                <span class="progress-label">Your Progress</span>
-                <span class="progress-count" id="progressCount">0 of 0 steps done</span>
+            <!-- Card wrapper: toggles between login & signup -->
+            <div class="card-flip-wrap" id="cardWrap">
+
+                <!-- ── LOGIN PANEL ── -->
+                <div class="login-card" id="loginCard">
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                        <div class="avatar-ring">
+                            <div class="avatar-icon">🎙️</div>
+                        </div>
+                        <h1>Welcome Back</h1>
+                        <p>Sign in to continue your journey</p>
+                    </div>
+                    <form class="login-form" id="loginForm" novalidate>
+                        <div class="field-group">
+                            <label for="username">Username</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="username" placeholder="Enter your username"
+                                    autocomplete="username" required>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label for="password">Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="password" placeholder="Enter your password"
+                                    autocomplete="current-password" required>
+                                <button type="button" class="eye-btn" id="togglePwd"
+                                    aria-label="Toggle password">👁</button>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" id="rememberMe"> Remember me
+                            </label>
+                            <a href="#" class="forgot-link">Forgot password?</a>
+                        </div>
+                        <div class="error-msg" id="loginError"></div>
+                        <button type="submit" class="login-btn" id="loginBtn">
+                            <span class="btn-text">Sign In</span>
+                            <span class="btn-spinner" id="loginSpinner" style="display:none">⏳</span>
+                        </button>
+                    </form>
+                    <div class="card-footer">
+                        <p>Don't have an account? <a href="#" id="showSignup">Create one →</a></p>
+                    </div>
+                </div>
+
+                <!-- ── SIGNUP PANEL ── -->
+                <div class="login-card signup-card" id="signupCard" style="display:none;">
+                    <div class="card-glow"
+                        style="background: radial-gradient(ellipse, rgba(123,104,238,0.14) 0%, transparent 70%);"></div>
+                    <div class="card-header">
+                        <div class="avatar-ring"
+                            style="background: linear-gradient(135deg, rgba(123,104,238,0.15), rgba(240,160,80,0.1)); border-color: rgba(123,104,238,0.3);">
+                            <div class="avatar-icon">✨</div>
+                        </div>
+                        <h1>Create Account</h1>
+                        <p>Join CareLink Bharat today</p>
+                    </div>
+                    <form class="login-form" id="signupForm" novalidate>
+                        <div class="field-group">
+                            <label for="su_name">Full Name</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🙂</span>
+                                <input type="text" id="su_name" placeholder="Your full name" required>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label for="su_username">Username</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="su_username" placeholder="Choose a username"
+                                    autocomplete="username" required>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label for="su_password">Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="su_password" placeholder="Create a password (min 6 chars)"
+                                    required>
+                                <button type="button" class="eye-btn" id="toggleSuPwd"
+                                    aria-label="Toggle password">👁</button>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label for="su_confirm">Confirm Password</label>
+                            <div class="input-wrap">
+                                <span class="input-icon">✅</span>
+                                <input type="password" id="su_confirm" placeholder="Re-enter your password" required>
+                            </div>
+                        </div>
+                        <div class="error-msg" id="signupError"></div>
+                        <div class="success-msg" id="signupSuccess"></div>
+                        <button type="submit" class="login-btn signup-btn" id="signupBtn">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-spinner" id="signupSpinner" style="display:none">⏳</span>
+                        </button>
+                    </form>
+                    <div class="card-footer">
+                        <p>Already have an account? <a href="#" id="showLogin">← Sign in</a></p>
+                    </div>
+                </div>
+
+            </div><!-- /card-flip-wrap -->
+
+            <div class="scroll-hint">
+                <div class="scroll-arrow">⬇</div>
+                <span>Scroll to explore</span>
             </div>
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFill"></div>
+
+        </div><!-- /login-overlay -->
+
+    </div><!-- /loginScreen -->
+
+
+    <!-- ══════════════════════════════════════════════════
+         MAIN APP (hidden until authenticated)
+    ══════════════════════════════════════════════════ -->
+    <div id="mainApp" style="display:none;">
+
+        <!-- Welcome greeting banner -->
+        <div class="welcome-banner" id="welcomeBanner" style="display:none;">
+            <span class="welcome-emoji">👋</span>
+            <span class="welcome-text" id="welcomeText"></span>
+            <button class="welcome-dismiss" id="welcomeDismiss">✕</button>
+        </div>
+
+        <nav class="navbar">
+            <div class="logo-group">
+                <div class="logo-text">CareLink <span>Bharat</span></div>
             </div>
-        </section>
-
-        <div class="voice-controls" id="voiceControls">
-            <button class="voice-ctrl-btn" id="pauseBtn">⏸ Pause</button>
-            <button class="voice-ctrl-btn" id="resumeBtn">▶ Resume</button>
-            <button class="voice-ctrl-btn" id="stopBtn">⏹ Stop</button>
-            <div class="speed-control">
-                <label style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Speed</label>
-                <input type="range" min="0.5" max="1.5" step="0.1" value="0.9" id="speedSlider">
+            <div class="nav-actions">
+                <div class="user-chip" id="userChip" style="display:none;">
+                    <span class="user-chip-avatar">👤</span>
+                    <span class="user-chip-name" id="userChipName"></span>
+                </div>
+                <button class="nav-btn lang-toggle" id="langToggle">EN / हि</button>
+                <button class="nav-btn" id="fontToggle">Aa+</button>
+                <button class="nav-btn" id="historyBtn">History</button>
             </div>
-        </div>
+        </nav>
 
-        <section class="steps-section" id="stepsSection">
-            <h2 class="steps-title"><span class="icon">📋</span> <span id="stepsTitleText">Steps</span></h2>
-            <div id="stepsContainer"></div>
-        </section>
-
-        <div class="celebration" id="celebration">
-            <div class="big-icon" style="font-size: 64px; margin-bottom: 12px;">🎉</div>
-            <h2>All Done!</h2>
-            <p>Great job! You've completed all the steps.</p>
-            <button class="new-query-btn" id="newQueryBtn">Ask Another Question</button>
-        </div>
-
-        <div class="loading-state" id="loadingState">
-            <div class="loading-dots"><span></span><span></span><span></span></div>
-            <p>Preparing your steps…</p>
-        </div>
-
-        <div class="empty-state" id="emptyState">
-            <div class="empty-icon" style="font-size: 56px; opacity: 0.6; margin-bottom: 16px;">🧭</div>
-            <h3>What do you need help with?</h3>
-            <p>Type or speak your question, and we'll break it into easy steps.</p>
-            <div class="example-queries">
-                <button class="example-chip" data-query="How to send a photo on WhatsApp">📱 WhatsApp photo</button>
-                <button class="example-chip" data-query="How to pay electricity bill online">💡 Electricity
-                    bill</button>
-                <button class="example-chip" data-query="How to check bank balance via UPI">🏦 Check balance</button>
-                <button class="example-chip" data-query="How to create a Gmail account">📧 Gmail account</button>
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h3>📋 Query History</h3>
+                <div class="history-header-actions">
+                    <button class="history-clear-btn" id="historyClear">🗑 Clear All</button>
+                    <button class="history-close-btn" id="historyClose">✕</button>
+                </div>
             </div>
+            <div class="history-list" id="historyList"></div>
         </div>
 
-    </main>
+        <main class="main-container">
 
-    <footer class="footer">
-        <div class="footer-brand">
-            <span class="footer-logo">🤝</span>
-            <span class="footer-name">CareLink <span>Bharat</span></span>
-        </div>
-        <p class="footer-desc">CareLink Bharat is a voice-guided digital assistance platform that helps users navigate
-            everyday tasks — from paying bills to sending messages — with simple, step-by-step instructions read aloud
-            in their language.</p>
-        <div class="footer-credits">
-            Made with ❤️ by <strong>Ashnaa Seth</strong> &amp; <strong>Suhrid Marwah</strong>
-        </div>
-        <div class="footer-bottom">© 2026 CareLink Bharat · Helping India go digital.</div>
-    </footer>
+            <section class="hero">
+                <div class="hero-badge">🎙️ Voice-Guided Assistance</div>
+                <h1>Need help with something?<br><span class="highlight">Just ask. We'll guide you.</span></h1>
+                <p>Speak or type your question and get simple, step-by-step guidance — read aloud for you.</p>
+            </section>
+
+            <section class="query-section">
+                <div class="query-box" id="queryBox">
+                    <input type="text" class="query-input" id="queryInput"
+                        placeholder="Ask anything… e.g. 'How to send a WhatsApp photo?'">
+                    <button class="mic-btn" id="micBtn">🎤</button>
+                    <button class="submit-btn" id="submitBtn">➜</button>
+                </div>
+                <div class="mic-status" id="micStatus"></div>
+                <p class="query-hint" id="queryHint">💡 Try: <strong>"How do I pay an electricity bill online?"</strong>
+                </p>
+            </section>
+
+            <section class="progress-section" id="progressSection">
+                <div class="progress-header">
+                    <span class="progress-label">Your Progress</span>
+                    <span class="progress-count" id="progressCount">0 of 0 steps done</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </section>
+
+            <div class="voice-controls" id="voiceControls">
+                <button class="voice-ctrl-btn" id="pauseBtn">⏸ Pause</button>
+                <button class="voice-ctrl-btn" id="resumeBtn">▶ Resume</button>
+                <button class="voice-ctrl-btn" id="stopBtn">⏹ Stop</button>
+                <div class="speed-control">
+                    <label style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Speed</label>
+                    <input type="range" min="0.5" max="1.5" step="0.1" value="0.9" id="speedSlider">
+                </div>
+            </div>
+
+            <section class="steps-section" id="stepsSection">
+                <h2 class="steps-title"><span class="icon">📋</span> <span id="stepsTitleText">Steps</span></h2>
+                <div id="stepsContainer"></div>
+            </section>
+
+            <div class="celebration" id="celebration">
+                <div class="big-icon" style="font-size: 64px; margin-bottom: 12px;">🎉</div>
+                <h2>All Done!</h2>
+                <p>Great job! You've completed all the steps.</p>
+                <button class="new-query-btn" id="newQueryBtn">Ask Another Question</button>
+            </div>
+
+            <div class="loading-state" id="loadingState">
+                <div class="loading-dots"><span></span><span></span><span></span></div>
+                <p>Preparing your steps…</p>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon" style="font-size: 56px; opacity: 0.6; margin-bottom: 16px;"></div>
+                <h3>What do you need help with?</h3>
+                <p>Type or speak your question, and we'll break it into easy steps.</p>
+                <div class="example-queries">
+                    <button class="example-chip" data-query="How to send a photo on WhatsApp">📱 WhatsApp photo</button>
+                    <button class="example-chip" data-query="How to pay electricity bill online">💡 Electricity
+                        bill</button>
+                    <button class="example-chip" data-query="How to check bank balance via UPI">🏦 Check
+                        balance</button>
+                    <button class="example-chip" data-query="How to create a Gmail account">📧 Gmail account</button>
+                </div>
+            </div>
+
+        </main>
+
+        <div class="footer-spacer"></div>
+
+        <footer class="footer">
+            <div class="footer-brand">
+                <span class="footer-name">CareLink <span>Bharat</span></span>
+            </div>
+            <p class="footer-desc">CareLink Bharat is a voice-guided digital assistance platform that helps users
+                navigate
+                everyday tasks — from paying bills to sending messages — with simple, step-by-step instructions read
+                aloud
+                in their language.</p>
+            <div class="footer-credits">
+                Made by <strong>Ashnaa Seth</strong> &amp; <strong>Suhrid Marwah</strong>
+            </div>
+            <div class="footer-bottom">© 2026 CareLink Bharat · Helping India go digital.</div>
+        </footer>
+
+    </div><!-- /mainApp -->
 
     <script src="script.js"></script>
-    <script src="three-bg.js"></script>
+
 </body>
 
 </html>
