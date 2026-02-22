@@ -1,6 +1,6 @@
-# 🩺 CareLink Bharat
+# 💻 CareLink Bharat
 
-> A voice-first web experience designed to simplify digital interactions through guided navigation, real-time assistance, and accessibility-first design.
+A voice-first web experience designed to simplify digital interactions through guided navigation, real-time assistance, and accessibility-first design.
 
 ---
 
