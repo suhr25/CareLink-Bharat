@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareLink Bharat — Sign In</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <!-- Three.js canvas is injected by login-bg.js -->
+
+    <!-- Page-out transition overlay -->
+    <div class="page-transition-out" id="pageTransitionOut">
+        <div class="pt-ripple"></div>
+        <div class="pt-text">Welcome to CareLink Bharat</div>
+    </div>
+
+    <div class="login-overlay">
+
+        <!-- Brand -->
+        <div class="brand-top">
+            <div class="brand-name">CareLink <span>Bharat</span></div>
+            <div class="brand-tagline">Voice-Guided Digital Assistance</div>
+        </div>
+
+        <!-- ══ CARD WRAPPER (flips between login & signup) ══ -->
+        <div class="card-flip-wrap" id="cardWrap">
+
+            <!-- ── LOGIN PANEL ── -->
+            <div class="login-card" id="loginCard">
+                <div class="card-glow"></div>
+
+                <div class="card-header">
+                    <div class="avatar-ring">
+                        <div class="avatar-icon">🎙️</div>
+                    </div>
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue your journey</p>
+                </div>
+
+                <form class="login-form" id="loginForm" novalidate>
+
+                    <div class="field-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="username" placeholder="Enter your username" autocomplete="username"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" placeholder="Enter your password"
+                                autocomplete="current-password" required>
+                            <button type="button" class="eye-btn" id="togglePwd"
+                                aria-label="Toggle password">👁</button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <div class="error-msg" id="loginError"></div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-spinner" id="loginSpinner" style="display:none">⏳</span>
+                    </button>
+
+                </form>
+
+                <div class="card-footer">
+                    <p>Don't have an account? <a href="#" id="showSignup">Create one →</a></p>
+                </div>
+            </div>
+
+            <!-- ── SIGNUP PANEL ── -->
+            <div class="login-card signup-card" id="signupCard" style="display:none;">
+                <div class="card-glow"
+                    style="background: radial-gradient(ellipse, rgba(123,104,238,0.14) 0%, transparent 70%);"></div>
+
+                <div class="card-header">
+                    <div class="avatar-ring"
+                        style="background: linear-gradient(135deg, rgba(123,104,238,0.15), rgba(240,160,80,0.1)); border-color: rgba(123,104,238,0.3);">
+                        <div class="avatar-icon">✨</div>
+                    </div>
+                    <h1>Create Account</h1>
+                    <p>Join CareLink Bharat today</p>
+                </div>
+
+                <form class="login-form" id="signupForm" novalidate>
+
+                    <div class="field-group">
+                        <label for="su_name">Full Name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🙂</span>
+                            <input type="text" id="su_name" placeholder="Your full name" required>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="su_username">Username</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="su_username" placeholder="Choose a username" autocomplete="username"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="su_password">Password</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="su_password" placeholder="Create a password (min 6 chars)"
+                                required>
+                            <button type="button" class="eye-btn" id="toggleSuPwd"
+                                aria-label="Toggle password">👁</button>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="su_confirm">Confirm Password</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">✅</span>
+                            <input type="password" id="su_confirm" placeholder="Re-enter your password" required>
+                        </div>
+                    </div>
+
+                    <div class="error-msg" id="signupError"></div>
+                    <div class="success-msg" id="signupSuccess"></div>
+
+                    <button type="submit" class="login-btn signup-btn" id="signupBtn">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-spinner" id="signupSpinner" style="display:none">⏳</span>
+                    </button>
+
+                </form>
+
+                <div class="card-footer">
+                    <p>Already have an account? <a href="#" id="showLogin">← Sign in</a></p>
+                </div>
+            </div>
+
+        </div><!-- /card-flip-wrap -->
+
+        <!-- Floating hint -->
+        <div class="scroll-hint">
+            <div class="scroll-arrow">⬇</div>
+            <span>Scroll to explore</span>
+        </div>
+
+    </div>
+
+    <script src="login-bg.js"></script>
+    <script>
+        // ── USER STORE (localStorage) ─────────────────────────
+        function getUsers() {
+            try { return JSON.parse(localStorage.getItem('cl_users') || '[]'); }
+            catch { return []; }
+        }
+        function saveUsers(users) {
+            localStorage.setItem('cl_users', JSON.stringify(users));
+        }
+
+        // Seed built-in accounts if store is empty
+        (function seedDefaults() {
+            const existing = getUsers();
+            if (!existing.length) {
+                saveUsers([
+                    { name: 'Admin', username: 'admin', password: 'carelink2026' },
+                    { name: 'Suhrid Marwah', username: 'suhrid', password: 'pstoJT@2026' },
+                    { name: 'Ashnaa Seth', username: 'ashnaa', password: 'pstoJT@2026' },
+                ]);
+            }
+        })();
+
+        // ── PANEL TOGGLE ──────────────────────────────────────
+        const loginCard = document.getElementById('loginCard');
+        const signupCard = document.getElementById('signupCard');
+
+        document.getElementById('showSignup').addEventListener('click', (e) => {
+            e.preventDefault();
+            loginCard.classList.add('slide-out-left');
+            setTimeout(() => {
+                loginCard.style.display = 'none';
+                loginCard.classList.remove('slide-out-left');
+                signupCard.style.display = 'block';
+                signupCard.classList.add('slide-in-right');
+                setTimeout(() => signupCard.classList.remove('slide-in-right'), 400);
+            }, 260);
+        });
+
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            signupCard.classList.add('slide-out-right');
+            setTimeout(() => {
+                signupCard.style.display = 'none';
+                signupCard.classList.remove('slide-out-right');
+                loginCard.style.display = 'block';
+                loginCard.classList.add('slide-in-left');
+                setTimeout(() => loginCard.classList.remove('slide-in-left'), 400);
+            }, 260);
+        });
+
+        // ── LOGIN LOGIC ───────────────────────────────────────
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const loginBtnTxt = loginForm.querySelector('.btn-text');
+        const togglePwd = document.getElementById('togglePwd');
+        const pwdInput = document.getElementById('password');
+
+        togglePwd.addEventListener('click', () => {
+            pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+            togglePwd.textContent = pwdInput.type === 'password' ? '👁' : '🙈';
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = pwdInput.value;
+
+            clearMsg(loginError);
+
+            if (!username || !password) { showError(loginError, 'Please fill in all fields.'); return; }
+
+            setLoading(loginBtnTxt, loginSpinner, true);
+            await delay(800);
+            setLoading(loginBtnTxt, loginSpinner, false);
+
+            const users = getUsers();
+            const valid = users.find(u => u.username === username && u.password === password);
+
+            if (valid) {
+                if (document.getElementById('rememberMe').checked) {
+                    localStorage.setItem('cl_user', username);
+                }
+                // Store full name for greeting on main page
+                localStorage.setItem('cl_name', valid.name || valid.username);
+                loginCard.classList.add('success');
+                await delay(500);
+                triggerPageTransition('index.html');
+            } else {
+                showError(loginError, 'Incorrect username or password.');
+                loginCard.classList.add('shake');
+                setTimeout(() => loginCard.classList.remove('shake'), 500);
+            }
+        });
+
+        // Auto-fill remembered user
+        const saved = localStorage.getItem('cl_user');
+        if (saved) document.getElementById('username').value = saved;
+
+        // ── SIGNUP LOGIC ──────────────────────────────────────
+        const signupForm = document.getElementById('signupForm');
+        const signupError = document.getElementById('signupError');
+        const signupSuccess = document.getElementById('signupSuccess');
+        const signupSpinner = document.getElementById('signupSpinner');
+        const signupBtnTxt = signupForm.querySelector('.btn-text');
+        const toggleSuPwd = document.getElementById('toggleSuPwd');
+        const suPwdInput = document.getElementById('su_password');
+
+        toggleSuPwd.addEventListener('click', () => {
+            suPwdInput.type = suPwdInput.type === 'password' ? 'text' : 'password';
+            toggleSuPwd.textContent = suPwdInput.type === 'password' ? '👁' : '🙈';
+        });
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMsg(signupError);
+            clearMsg(signupSuccess);
+
+            const name = document.getElementById('su_name').value.trim();
+            const username = document.getElementById('su_username').value.trim().toLowerCase();
+            const password = suPwdInput.value;
+            const confirm = document.getElementById('su_confirm').value;
+
+            if (!name || !username || !password || !confirm) {
+                showError(signupError, 'Please fill in all fields.'); return;
+            }
+            if (username.length < 3) {
+                showError(signupError, 'Username must be at least 3 characters.'); return;
+            }
+            if (password.length < 6) {
+                showError(signupError, 'Password must be at least 6 characters.'); return;
+            }
+            if (password !== confirm) {
+                showError(signupError, 'Passwords do not match.');
+                signupCard.classList.add('shake');
+                setTimeout(() => signupCard.classList.remove('shake'), 500);
+                return;
+            }
+
+            const users = getUsers();
+            if (users.find(u => u.username === username)) {
+                showError(signupError, 'Username is already taken. Try another.');
+                return;
+            }
+
+            setLoading(signupBtnTxt, signupSpinner, true);
+            await delay(900);
+            setLoading(signupBtnTxt, signupSpinner, false);
+
+            users.push({ name, username, password });
+            saveUsers(users);
+
+            showSuccess(signupSuccess, `✅ Account created! Welcome, ${name}!`);
+            localStorage.setItem('cl_user', username);
+            localStorage.setItem('cl_name', name);
+
+            await delay(1200);
+            signupCard.classList.add('success');
+            await delay(400);
+            triggerPageTransition('index.html');
+        });
+
+        // ── UTILS ─────────────────────────────────────────────
+        function showError(el, msg) { el.textContent = msg; el.classList.add('visible'); }
+        function showSuccess(el, msg) { el.textContent = msg; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
+        function clearMsg(el) { el.textContent = ''; el.classList.remove('visible'); el.style.opacity = ''; }
+        function setLoading(txt, sp, on) { txt.style.display = on ? 'none' : 'inline'; sp.style.display = on ? 'inline' : 'none'; }
+        function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // ── PAGE TRANSITION ───────────────────────────────────
+        function triggerPageTransition(url) {
+            const overlay = document.getElementById('pageTransitionOut');
+            overlay.classList.add('active');
+            setTimeout(() => { window.location.href = url; }, 900);
+        }
+    </script>
+
+</body>
+
+</html>
