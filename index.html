@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareLink Bharat — Voice Navigation Guide</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo-group">
+            <div class="logo-icon">🤝</div>
+            <div class="logo-text">CareLink <span>Bharat</span></div>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn lang-toggle" id="langToggle">EN / हि</button>
+            <button class="nav-btn" id="fontToggle">Aa+</button>
+            <button class="nav-btn">📋 History</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <section class="hero">
+            <div class="hero-badge">🎙️ Voice-Guided Assistance</div>
+            <h1>Need help with something?<br><span class="highlight">Just ask. We'll guide you.</span></h1>
+            <p>Speak or type your question and get simple, step-by-step guidance — read aloud for you.</p>
+        </section>
+
+        <section class="query-section">
+            <div class="query-box" id="queryBox">
+                <input type="text" class="query-input" id="queryInput"
+                    placeholder="Ask anything… e.g. 'How to send a WhatsApp photo?'">
+                <button class="mic-btn" id="micBtn">🎤</button>
+                <button class="submit-btn" id="submitBtn">➜</button>
+            </div>
+            <div class="mic-status" id="micStatus"></div>
+            <p class="query-hint" id="queryHint">💡 Try: <strong>"How do I pay an electricity bill online?"</strong></p>
+        </section>
+
+        <section class="progress-section" id="progressSection">
+            <div class="progress-header">
+                <span class="progress-label">Your Progress</span>
+                <span class="progress-count" id="progressCount">0 of 0 steps done</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </section>
+
+        <div class="voice-controls" id="voiceControls">
+            <button class="voice-ctrl-btn" id="pauseBtn">⏸ Pause</button>
+            <button class="voice-ctrl-btn" id="resumeBtn">▶ Resume</button>
+            <button class="voice-ctrl-btn" id="stopBtn">⏹ Stop</button>
+            <div class="speed-control">
+                <label style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Speed</label>
+                <input type="range" min="0.5" max="1.5" step="0.1" value="0.9" id="speedSlider">
+            </div>
+        </div>
+
+        <section class="steps-section" id="stepsSection">
+            <h2 class="steps-title"><span class="icon">📋</span> <span id="stepsTitleText">Steps</span></h2>
+            <div id="stepsContainer"></div>
+        </section>
+
+        <div class="celebration" id="celebration">
+            <div class="big-icon" style="font-size: 64px; margin-bottom: 12px;">🎉</div>
+            <h2>All Done!</h2>
+            <p>Great job! You've completed all the steps.</p>
+            <button class="new-query-btn" id="newQueryBtn">Ask Another Question</button>
+        </div>
+
+        <div class="loading-state" id="loadingState">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+            <p>Preparing your steps…</p>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon" style="font-size: 56px; opacity: 0.6; margin-bottom: 16px;">🧭</div>
+            <h3>What do you need help with?</h3>
+            <p>Type or speak your question, and we'll break it into easy steps.</p>
+            <div class="example-queries">
+                <button class="example-chip" data-query="How to send a photo on WhatsApp">📱 WhatsApp photo</button>
+                <button class="example-chip" data-query="How to pay electricity bill online">💡 Electricity
+                    bill</button>
+                <button class="example-chip" data-query="How to check bank balance via UPI">🏦 Check balance</button>
+                <button class="example-chip" data-query="How to create a Gmail account">📧 Gmail account</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        Made with ❤️ by <a href="#" style="color: var(--primary-light); text-decoration: none;">CareLink Bharat</a> ·
+        Helping India go digital.
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
