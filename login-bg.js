@@ -1,7 +1,6 @@
 (function () {
     'use strict';
 
-    // ── SCENE SETUP ──────────────────────────────────────
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
     camera.position.set(0, 0, 300);
@@ -11,7 +10,7 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.prepend(renderer.domElement);
 
-    // ── MOUSE PARALLAX ───────────────────────────────────
+    
     const mouse = { x: 0, y: 0 };
     const ms = { x: 0, y: 0 };
     document.addEventListener('mousemove', (e) => {
@@ -19,7 +18,6 @@
         mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    // ── BACKGROUND GRID (subtle depth plane) ─────────────
     const gridGeo = new THREE.PlaneGeometry(1400, 900, 60, 40);
     gridGeo.rotateX(-Math.PI * 0.3);
     const gridMat = new THREE.MeshBasicMaterial({
@@ -33,7 +31,6 @@
     grid.position.z = -100;
     scene.add(grid);
 
-    // Breathe the grid height with a second animated copy
     const gridGeo2 = new THREE.PlaneGeometry(1400, 900, 30, 20);
     gridGeo2.rotateX(-Math.PI * 0.3);
     const gridMat2 = new THREE.MeshBasicMaterial({
@@ -47,7 +44,6 @@
     grid2.position.z = -150;
     scene.add(grid2);
 
-    // ── ORBITING RINGS ───────────────────────────────────
     function makeRing(radius, tube, color, ox, oy, oz) {
         const geo = new THREE.TorusGeometry(radius, tube, 16, 120);
         const mat = new THREE.MeshBasicMaterial({
@@ -67,7 +63,6 @@
     const ring3 = makeRing(60, 0.7, 0xF0A050, -60, 30, -60);
     const ring4 = makeRing(45, 0.5, 0x56C8D8, 80, -40, -40);
 
-    // Fade rings in on load
     function fadeIn(matRef, target, duration) {
         const start = performance.now();
         function step(now) {
@@ -82,7 +77,7 @@
     setTimeout(() => fadeIn(ring3.mat, 0.10, 1200), 700);
     setTimeout(() => fadeIn(ring4.mat, 0.08, 1200), 900);
 
-    // ── ICOSAHEDRON (central orb) ─────────────────────────
+    
     const icoGeo = new THREE.IcosahedronGeometry(28, 1);
     const icoMat = new THREE.MeshBasicMaterial({
         color: 0x56C8D8,
@@ -95,7 +90,6 @@
     scene.add(ico);
     setTimeout(() => fadeIn(icoMat, 0.14, 1400), 200);
 
-    // ── OCTAHEDRONS (side satellites) ─────────────────────
     function makeOcta(size, color, x, y, z) {
         const geo = new THREE.OctahedronGeometry(size, 0);
         const mat = new THREE.MeshBasicMaterial({
@@ -115,7 +109,6 @@
     setTimeout(() => fadeIn(octa2.mat, 0.15, 1200), 800);
     setTimeout(() => fadeIn(octa3.mat, 0.12, 1000), 500);
 
-    // ── STAR PARTICLES ───────────────────────────────────
     const STAR_COUNT = 120;
     const starPos = new Float32Array(STAR_COUNT * 3);
     const starColor = new Float32Array(STAR_COUNT * 3);
@@ -146,7 +139,6 @@
     const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
 
-    // ── CONNECTION LINES (5 pairs) ────────────────────────
     function makeLine(fromPos, toPos, color) {
         const pts = [new THREE.Vector3(...fromPos), new THREE.Vector3(...toPos)];
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
@@ -164,23 +156,19 @@
         makeLine([130, -60, -30], [60, 80, -10], 0x7B68EE),
     ];
 
-    // ── ANIMATE ───────────────────────────────────────────
     const clock = new THREE.Clock();
 
     function animate() {
         requestAnimationFrame(animate);
         const t = clock.getElapsedTime();
 
-        // Smooth mouse
         ms.x += (mouse.x - ms.x) * 0.05;
         ms.y += (mouse.y - ms.y) * 0.05;
 
-        // Camera gentle drift + parallax
         camera.position.x = ms.x * 18;
         camera.position.y = ms.y * -12 + Math.sin(t * 0.3) * 4;
         camera.lookAt(0, 0, 0);
 
-        // Animate grid planes
         const gridVerts = gridGeo.attributes.position.array;
         for (let i = 0; i <= 60; i++) {
             for (let j = 0; j <= 40; j++) {
@@ -194,7 +182,6 @@
         }
         gridGeo.attributes.position.needsUpdate = true;
 
-        // Ring rotations
         ring1.mesh.rotation.x = t * 0.22 + ms.y * 0.3;
         ring1.mesh.rotation.y = t * 0.17 + ms.x * 0.3;
 
@@ -209,13 +196,11 @@
         ring4.mesh.rotation.x = t * 0.25;
         ring4.mesh.position.y = -40 + Math.cos(t * 0.8) * 6;
 
-        // Central icosahedron
         ico.rotation.x = t * 0.18;
         ico.rotation.y = t * 0.26 + ms.x * 0.15;
         const icoScale = 1 + Math.sin(t * 0.5) * 0.06;
         ico.scale.setScalar(icoScale);
 
-        // Satellite octahedrons
         octa1.mesh.rotation.x = t * 0.35 + ms.y * 0.2;
         octa1.mesh.rotation.y = t * 0.5;
         octa1.mesh.position.x = -110 + Math.sin(t * 0.4) * 12;
@@ -230,12 +215,10 @@
         octa3.mesh.rotation.z = -t * 0.4;
         octa3.mesh.position.y = 80 + Math.sin(t * 0.8) * 5;
 
-        // Animate connection line opacities
         lines.forEach(({ mat }, i) => {
             mat.opacity = 0.04 + Math.sin(t * 0.5 + i) * 0.04;
         });
 
-        // Particles drift
         stars.rotation.y = t * 0.008;
         stars.rotation.x = t * 0.004;
         starMat.opacity = 0.28 + Math.sin(t * 0.4) * 0.06;
@@ -245,7 +228,6 @@
 
     animate();
 
-    // ── RESIZE ────────────────────────────────────────────
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -253,3 +235,4 @@
     });
 
 })();
+
