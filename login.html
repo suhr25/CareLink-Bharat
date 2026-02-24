@@ -14,9 +14,7 @@
 
 <body>
 
-    <!-- Three.js canvas is injected by login-bg.js -->
 
-    <!-- Page-out transition overlay -->
     <div class="page-transition-out" id="pageTransitionOut">
         <div class="pt-ripple"></div>
         <div class="pt-text">Welcome to CareLink Bharat</div>
@@ -24,16 +22,13 @@
 
     <div class="login-overlay">
 
-        <!-- Brand -->
         <div class="brand-top">
             <div class="brand-name">CareLink <span>Bharat</span></div>
             <div class="brand-tagline">Voice-Guided Digital Assistance</div>
         </div>
 
-        <!-- ══ CARD WRAPPER (flips between login & signup) ══ -->
         <div class="card-flip-wrap" id="cardWrap">
 
-            <!-- ── LOGIN PANEL ── -->
             <div class="login-card" id="loginCard">
                 <div class="card-glow"></div>
 
@@ -155,9 +150,8 @@
                 </div>
             </div>
 
-        </div><!-- /card-flip-wrap -->
-
-        <!-- Floating hint -->
+        </div>
+       
         <div class="scroll-hint">
             <div class="scroll-arrow">⬇</div>
             <span>Scroll to explore</span>
@@ -167,8 +161,7 @@
 
     <script src="login-bg.js"></script>
     <script>
-        // ── USER STORE (localStorage) ─────────────────────────
-        function getUsers() {
+                function getUsers() {
             try { return JSON.parse(localStorage.getItem('cl_users') || '[]'); }
             catch { return []; }
         }
@@ -187,8 +180,6 @@
                 ]);
             }
         })();
-
-        // ── PANEL TOGGLE ──────────────────────────────────────
         const loginCard = document.getElementById('loginCard');
         const signupCard = document.getElementById('signupCard');
 
@@ -216,7 +207,6 @@
             }, 260);
         });
 
-        // ── LOGIN LOGIC ───────────────────────────────────────
         const loginForm = document.getElementById('loginForm');
         const loginError = document.getElementById('loginError');
         const loginSpinner = document.getElementById('loginSpinner');
@@ -249,7 +239,6 @@
                 if (document.getElementById('rememberMe').checked) {
                     localStorage.setItem('cl_user', username);
                 }
-                // Store full name for greeting on main page
                 localStorage.setItem('cl_name', valid.name || valid.username);
                 loginCard.classList.add('success');
                 await delay(500);
@@ -261,11 +250,9 @@
             }
         });
 
-        // Auto-fill remembered user
         const saved = localStorage.getItem('cl_user');
         if (saved) document.getElementById('username').value = saved;
 
-        // ── SIGNUP LOGIC ──────────────────────────────────────
         const signupForm = document.getElementById('signupForm');
         const signupError = document.getElementById('signupError');
         const signupSuccess = document.getElementById('signupSuccess');
@@ -328,14 +315,12 @@
             triggerPageTransition('index.html');
         });
 
-        // ── UTILS ─────────────────────────────────────────────
         function showError(el, msg) { el.textContent = msg; el.classList.add('visible'); }
         function showSuccess(el, msg) { el.textContent = msg; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
         function clearMsg(el) { el.textContent = ''; el.classList.remove('visible'); el.style.opacity = ''; }
         function setLoading(txt, sp, on) { txt.style.display = on ? 'none' : 'inline'; sp.style.display = on ? 'inline' : 'none'; }
         function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-        // ── PAGE TRANSITION ───────────────────────────────────
         function triggerPageTransition(url) {
             const overlay = document.getElementById('pageTransitionOut');
             overlay.classList.add('active');
