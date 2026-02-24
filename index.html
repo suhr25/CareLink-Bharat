@@ -14,19 +14,11 @@
 </head>
 
 <body>
-
-    <!-- ══════════════════════════════════════════════════
-         LOGIN SCREEN (shown before authentication)
-    ══════════════════════════════════════════════════ -->
     <div id="loginScreen">
-
-        <!-- Transition ripple overlay (fires on login success) -->
         <div class="page-transition-out" id="pageTransitionOut">
             <div class="pt-ripple"></div>
             <div class="pt-text">Welcome to CareLink Bharat</div>
         </div>
-
-        <!-- Three.js canvas for login animation (injected by script.js) -->
 
         <div class="login-overlay">
 
@@ -35,10 +27,8 @@
                 <div class="brand-tagline">Voice-Guided Digital Assistance</div>
             </div>
 
-            <!-- Card wrapper: toggles between login & signup -->
             <div class="card-flip-wrap" id="cardWrap">
 
-                <!-- ── LOGIN PANEL ── -->
                 <div class="login-card" id="loginCard">
                     <div class="card-glow"></div>
                     <div class="card-header">
@@ -84,7 +74,7 @@
                     </div>
                 </div>
 
-                <!-- ── SIGNUP PANEL ── -->
+                
                 <div class="login-card signup-card" id="signupCard" style="display:none;">
                     <div class="card-glow"
                         style="background: radial-gradient(ellipse, rgba(123,104,238,0.14) 0%, transparent 70%);"></div>
@@ -141,24 +131,18 @@
                     </div>
                 </div>
 
-            </div><!-- /card-flip-wrap -->
+            </div>
 
             <div class="scroll-hint">
                 <div class="scroll-arrow">⬇</div>
                 <span>Scroll to explore</span>
             </div>
 
-        </div><!-- /login-overlay -->
+        </div>
+    </div>
 
-    </div><!-- /loginScreen -->
-
-
-    <!-- ══════════════════════════════════════════════════
-         MAIN APP (hidden until authenticated)
-    ══════════════════════════════════════════════════ -->
     <div id="mainApp" style="display:none;">
 
-        <!-- Welcome greeting banner -->
         <div class="welcome-banner" id="welcomeBanner" style="display:none;">
             <span class="welcome-emoji">👋</span>
             <span class="welcome-text" id="welcomeText"></span>
@@ -281,11 +265,12 @@
             <div class="footer-bottom">© 2026 CareLink Bharat · Helping India go digital.</div>
         </footer>
 
-    </div><!-- /mainApp -->
+    </div>
 
     <script src="script.js"></script>
 
 </body>
 
 </html>
+
 
