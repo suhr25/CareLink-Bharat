@@ -1,4 +1,3 @@
-/* ── LOGIN PAGE STYLES ───────────────────────────── */
 :root {
     --primary: #56C8D8;
     --primary-glow: #6ED4E2;
@@ -27,10 +26,8 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow: hidden;
-    /* Full-viewport login page */
 }
 
-/* ── THREE.JS CANVAS ─────────────────────────────── */
 canvas {
     position: fixed;
     inset: 0;
@@ -38,7 +35,6 @@ canvas {
     pointer-events: none;
 }
 
-/* ── OVERLAY LAYOUT ──────────────────────────────── */
 .login-overlay {
     position: relative;
     z-index: 1;
@@ -51,7 +47,6 @@ canvas {
     gap: 32px;
 }
 
-/* ── BRAND TOP ───────────────────────────────────── */
 .brand-top {
     text-align: center;
     animation: fadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -78,7 +73,6 @@ canvas {
     font-weight: 600;
 }
 
-/* ── LOGIN CARD ──────────────────────────────────── */
 .login-card {
     position: relative;
     width: 100%;
@@ -104,7 +98,6 @@ canvas {
         0 0 40px rgba(86, 200, 216, 0.04);
 }
 
-/* Ambient glow blob behind card */
 .card-glow {
     position: absolute;
     width: 220px;
@@ -119,45 +112,34 @@ canvas {
 }
 
 @keyframes pulse {
-
-    0%,
-    100% {
+    0%, 100% {
         opacity: 0.6;
         transform: translateX(-50%) scale(1);
     }
-
     50% {
         opacity: 1;
         transform: translateX(-50%) scale(1.1);
     }
 }
 
-/* Card success shimmer */
 .login-card.success {
     box-shadow: 0 0 0 3px var(--primary), 0 0 60px rgba(86, 200, 216, 0.3);
     transform: scale(1.02);
 }
 
-/* Shake animation for wrong credentials */
 @keyframes shake {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateX(0);
     }
-
     20% {
         transform: translateX(-8px);
     }
-
     40% {
         transform: translateX(8px);
     }
-
     60% {
         transform: translateX(-5px);
     }
-
     80% {
         transform: translateX(5px);
     }
@@ -167,7 +149,6 @@ canvas {
     animation: shake 0.45s ease;
 }
 
-/* ── CARD HEADER ─────────────────────────────────── */
 .card-header {
     text-align: center;
     margin-bottom: 32px;
@@ -191,11 +172,9 @@ canvas {
     0% {
         box-shadow: 0 0 20px rgba(86, 200, 216, 0.1), 0 0 0 0 rgba(86, 200, 216, 0.05);
     }
-
     50% {
         box-shadow: 0 0 30px rgba(123, 104, 238, 0.15), 0 0 0 0 rgba(123, 104, 238, 0.05);
     }
-
     100% {
         box-shadow: 0 0 20px rgba(86, 200, 216, 0.1), 0 0 0 0 rgba(86, 200, 216, 0.05);
     }
@@ -218,7 +197,6 @@ canvas {
     color: var(--text-muted);
 }
 
-/* ── FORM ────────────────────────────────────────── */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -288,7 +266,6 @@ canvas {
     opacity: 1;
 }
 
-/* ── FORM OPTIONS ────────────────────────────────── */
 .form-options {
     display: flex;
     align-items: center;
@@ -321,7 +298,6 @@ canvas {
     color: var(--primary-glow);
 }
 
-/* ── ERROR MESSAGE ───────────────────────────────── */
 .error-msg {
     font-size: 13px;
     font-weight: 600;
@@ -338,7 +314,6 @@ canvas {
     transform: translateY(0);
 }
 
-/* ── LOGIN BUTTON ────────────────────────────────── */
 .login-btn {
     width: 100%;
     padding: 14px;
@@ -385,7 +360,6 @@ canvas {
     z-index: 1;
 }
 
-/* ── CARD FOOTER ─────────────────────────────────── */
 .card-footer {
     text-align: center;
     margin-top: 24px;
@@ -404,7 +378,6 @@ canvas {
     color: var(--primary-glow);
 }
 
-/* ── SCROLL HINT ─────────────────────────────────── */
 .scroll-hint {
     display: flex;
     flex-direction: column;
@@ -422,24 +395,19 @@ canvas {
 }
 
 @keyframes bounce {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateY(0);
     }
-
     50% {
         transform: translateY(6px);
     }
 }
 
-/* ── ENTRY ANIMATIONS ────────────────────────────── */
 @keyframes fadeDown {
     from {
         opacity: 0;
         transform: translateY(-20px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -451,7 +419,6 @@ canvas {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -459,18 +426,14 @@ canvas {
 }
 
 @keyframes floatHint {
-
-    0%,
-    100% {
+    0%, 100% {
         opacity: 0.5;
     }
-
     50% {
         opacity: 0.8;
     }
 }
 
-/* ── RESPONSIVE ──────────────────────────────────── */
 @media (max-width: 480px) {
     .login-card {
         padding: 28px 20px;
@@ -482,14 +445,12 @@ canvas {
     }
 }
 
-/* ── CARD FLIP WRAPPER ───────────────────────────── */
 .card-flip-wrap {
     width: 100%;
     max-width: 420px;
     position: relative;
 }
 
-/* Signup card scrollable on short screens */
 .signup-card {
     max-height: 90vh;
     overflow-y: auto;
@@ -500,7 +461,6 @@ canvas {
     display: none;
 }
 
-/* Signup button — purple gradient */
 .signup-btn {
     background: linear-gradient(135deg, var(--purple), #5B4FE9);
 }
@@ -513,7 +473,6 @@ canvas {
     box-shadow: 0 8px 24px rgba(123, 104, 238, 0.35);
 }
 
-/* ── SUCCESS MESSAGE ─────────────────────────────── */
 .success-msg {
     font-size: 13px;
     font-weight: 600;
@@ -525,13 +484,11 @@ canvas {
     transition: all 0.35s ease;
 }
 
-/* ── PANEL SLIDE ANIMATIONS ──────────────────────── */
 @keyframes slideInRight {
     from {
         opacity: 0;
         transform: translateX(40px);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
@@ -543,7 +500,6 @@ canvas {
         opacity: 1;
         transform: translateX(0);
     }
-
     to {
         opacity: 0;
         transform: translateX(-40px);
@@ -555,7 +511,6 @@ canvas {
         opacity: 0;
         transform: translateX(-40px);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
@@ -567,7 +522,6 @@ canvas {
         opacity: 1;
         transform: translateX(0);
     }
-
     to {
         opacity: 0;
         transform: translateX(40px);
@@ -590,7 +544,6 @@ canvas {
     animation: slideOutRight 0.28s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
-/* ── PAGE-OUT TRANSITION OVERLAY ─────────────────── */
 .page-transition-out {
     position: fixed;
     inset: 0;
@@ -631,11 +584,9 @@ canvas {
         transform: scale(0);
         opacity: 1;
     }
-
     60% {
         opacity: 0.7;
     }
-
     100% {
         transform: scale(40);
         opacity: 0;
@@ -657,7 +608,6 @@ canvas {
         color: rgba(255, 255, 255, 0);
         letter-spacing: 8px;
     }
-
     to {
         color: rgba(255, 255, 255, 0.85);
         letter-spacing: 2px;
