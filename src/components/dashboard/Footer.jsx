@@ -17,7 +17,7 @@ export default function Footer() {
 
             <p className="footer-desc">
                 CareLink Bharat is a voice-guided digital assistance platform that helps users
-                navigate everyday tasks — from paying bills to sending messages — with simple,
+                navigate everyday tasks from paying bills to sending messages with simple,
                 step-by-step instructions read aloud in their language.
             </p>
 
