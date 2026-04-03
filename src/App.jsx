@@ -28,7 +28,7 @@ function initDefaults() {
 }
 
 export default function App() {
-    const [preloaderDone, setPreloaderDone] = useState(false);
+    const [preloaderDone, setPreloaderDone] = useState(true);
     const [user, setUser] = useState(localStorage.getItem('cl_user'));
     const [name, setName] = useState(localStorage.getItem('cl_name'));
     const [isSignup, setIsSignup] = useState(false);
