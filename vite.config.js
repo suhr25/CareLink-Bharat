@@ -3,5 +3,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/CareLink-Bharat/',
+  // Base path set to root for Vercel deployment
+  base: '/',
 })

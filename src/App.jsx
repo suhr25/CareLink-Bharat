@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Preloader from './components/ui/Preloader';
@@ -28,14 +28,33 @@ function initDefaults() {
 }
 
 export default function App() {
-    const [preloaderDone, setPreloaderDone] = useState(true);
-    const [user, setUser] = useState(localStorage.getItem('cl_user'));
-    const [name, setName] = useState(localStorage.getItem('cl_name'));
+    const [preloaderDone, setPreloaderDone] = useState(false);
+    const [user, setUser] = useState(null);
+    const [name, setName] = useState(null);
     const [isSignup, setIsSignup] = useState(false);
     const [transitioning, setTransitioning] = useState(false);
 
-    // Init default users on first load
-    useState(() => initDefaults());
+    // Init and safety measures
+    useEffect(() => {
+        initDefaults();
+        
+        // Safety: Ensure app renders even if preloader fails
+        const safetyTimeout = setTimeout(() => {
+            setPreloaderDone(true);
+        }, 3000);
+
+        // Load user from localStorage safely
+        try {
+            const savedUser = localStorage.getItem('cl_user');
+            const savedName = localStorage.getItem('cl_name');
+            if (savedUser) setUser(savedUser);
+            if (savedName) setName(savedName);
+        } catch (e) {
+            console.error('Failed to load user state:', e);
+        }
+
+        return () => clearTimeout(safetyTimeout);
+    }, []);
 
     const handleLogin = useCallback((userData) => {
         setTransitioning(true);
@@ -142,6 +161,12 @@ export default function App() {
                         </motion.div>
                     )}
                 </AnimatePresence>
+            )}
+            {/* Error Fallback / No Content Safety */}
+            {!preloaderDone && (
+                <div style={{ position: 'fixed', bottom: '10px', right: '10px', fontSize: '10px', opacity: 0.3, zIndex: 10001 }}>
+                    Loading...
+                </div>
             )}
         </>
     );

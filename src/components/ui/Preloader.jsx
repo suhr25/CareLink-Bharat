@@ -5,11 +5,21 @@ export default function Preloader({ onComplete }) {
     const [visible, setVisible] = useState(true);
 
     useEffect(() => {
+        // Normal completion timer
         const timer = setTimeout(() => {
             setVisible(false);
             setTimeout(() => onComplete?.(), 500);
         }, 1800);
-        return () => clearTimeout(timer);
+
+        // Fail-safe callback (absolute max time)
+        const failSafe = setTimeout(() => {
+            onComplete?.();
+        }, 3000);
+
+        return () => {
+            clearTimeout(timer);
+            clearTimeout(failSafe);
+        };
     }, [onComplete]);
 
     return (
