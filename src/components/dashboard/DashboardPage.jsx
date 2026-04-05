@@ -11,7 +11,7 @@ import HistoryPanel from './HistoryPanel';
 import HowToUse from './HowToUse';
 import Footer from './Footer';
 
-const GROQ_KEY = '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';
+const GROQ_KEY = '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';
 
 export default function DashboardPage({ name, onLogout }) {
     const [query, setQuery] = useState('');
