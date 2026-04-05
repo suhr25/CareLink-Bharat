@@ -11,7 +11,7 @@ import HistoryPanel from './HistoryPanel';
 import HowToUse from './HowToUse';
 import Footer from './Footer';
 
-const GROQ_KEY = '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';
+const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
 export default function DashboardPage({ name, onLogout }) {
     const [query, setQuery] = useState('');
