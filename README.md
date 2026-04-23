@@ -36,7 +36,7 @@ to create a **hands-free digital navigation experience**.
 - Improves accessibility
 
 ### 🧠 AI-Powered Guidance
-- Powered by Groq (`llama-3.3-70b-versatile`)
+- Powered by Google Gemini (`gemini-1.5-flash`)
 - Context-aware responses
 - Structured step-by-step outputs
 

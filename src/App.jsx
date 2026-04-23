@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Preloader from './components/ui/Preloader';
@@ -6,168 +7,162 @@ import CosmicBackground from './components/three/CosmicBackground';
 import LoginPage from './components/login/LoginPage';
 import SignupPage from './components/login/SignupPage';
 import DashboardPage from './components/dashboard/DashboardPage';
+import GoogleCallback from './components/auth/GoogleCallback';
+import { useAuth } from './context/AuthContext';
 
-// ── LOCAL STORAGE UTILS ──
-function getUsers() {
-    try { return JSON.parse(localStorage.getItem('cl_users') || '[]'); }
-    catch { return []; }
+function AuthScreen() {
+  const [isSignup, setIsSignup] = useState(false);
+  const [searchParams] = useSearchParams();
+  const oauthError = searchParams.get('error');
+
+  return (
+    <motion.div
+      key="auth"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <CosmicBackground />
+      <div className="auth-container">
+        <motion.div
+          className="auth-brand"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h2 className="auth-brand-name">
+            <span className="primary">CareLink</span>
+            {' '}
+            <span className="accent">Bharat</span>
+          </h2>
+          <p className="auth-brand-tagline">Voice-Guided Digital Assistance</p>
+        </motion.div>
+
+        {oauthError && (
+          <motion.div
+            className="message-error"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ marginBottom: 16, maxWidth: 400, textAlign: 'center' }}
+          >
+            {decodeURIComponent(oauthError)}
+          </motion.div>
+        )}
+
+        <AnimatePresence mode="wait">
+          {!isSignup ? (
+            <LoginPage
+              key="login"
+              onSwitchToSignup={() => setIsSignup(true)}
+            />
+          ) : (
+            <SignupPage
+              key="signup"
+              onSwitchToLogin={() => setIsSignup(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
 }
 
-function saveUsers(users) {
-    localStorage.setItem('cl_users', JSON.stringify(users));
-}
-
-function initDefaults() {
-    if (!getUsers().length) {
-        saveUsers([
-            { name: 'Admin', username: 'admin', password: 'carelink2026' },
-            { name: 'Suhrid Marwah', username: 'suhrid', password: 'pstoJT@2026' },
-            { name: 'Ashnaa Seth', username: 'ashnaa', password: 'pstoJT@2026' },
-        ]);
-    }
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return user ? children : <Navigate to="/" replace />;
 }
 
 export default function App() {
-    const [preloaderDone, setPreloaderDone] = useState(false);
-    const [user, setUser] = useState(null);
-    const [name, setName] = useState(null);
-    const [isSignup, setIsSignup] = useState(false);
-    const [transitioning, setTransitioning] = useState(false);
+  const [preloaderDone, setPreloaderDone] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const { user, logout, loading } = useAuth();
 
-    // Init and safety measures
-    useEffect(() => {
-        initDefaults();
-        
-        // Safety: Ensure app renders even if preloader fails
-        const safetyTimeout = setTimeout(() => {
-            setPreloaderDone(true);
-        }, 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => setPreloaderDone(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
-        // Load user from localStorage safely
-        try {
-            const savedUser = localStorage.getItem('cl_user');
-            const savedName = localStorage.getItem('cl_name');
-            if (savedUser) setUser(savedUser);
-            if (savedName) setName(savedName);
-        } catch (e) {
-            console.error('Failed to load user state:', e);
-        }
+  const handleLogout = useCallback(async () => {
+    await logout();
+  }, [logout]);
 
-        return () => clearTimeout(safetyTimeout);
-    }, []);
+  // Trigger the transition overlay when logging in
+  useEffect(() => {
+    if (user && preloaderDone) {
+      setTransitioning(true);
+      const t = setTimeout(() => setTransitioning(false), 700);
+      return () => clearTimeout(t);
+    }
+  }, [user, preloaderDone]);
 
-    const handleLogin = useCallback((userData) => {
-        setTransitioning(true);
-        setTimeout(() => {
-            localStorage.setItem('cl_user', userData.username);
-            localStorage.setItem('cl_name', userData.name || userData.username);
-            setUser(userData.username);
-            setName(userData.name || userData.username);
-            setTransitioning(false);
-        }, 600);
-    }, []);
+  return (
+    <>
+      <Preloader onComplete={() => setPreloaderDone(true)} />
 
-    const handleLogout = useCallback(() => {
-        localStorage.removeItem('cl_user');
-        localStorage.removeItem('cl_name');
-        setUser(null);
-        setName(null);
-        setIsSignup(false);
-    }, []);
+      <AnimatePresence>
+        {transitioning && (
+          <motion.div
+            className="page-transition-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.span
+              className="page-transition-text"
+              initial={{ opacity: 0, letterSpacing: '12px' }}
+              animate={{ opacity: 1, letterSpacing: '4px' }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              Welcome
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-    return (
-        <>
-            {/* Preloader */}
-            <Preloader onComplete={() => setPreloaderDone(true)} />
+      {preloaderDone && !loading && (
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/auth/callback" element={<GoogleCallback />} />
 
-            {/* Page transition overlay */}
-            <AnimatePresence>
-                {transitioning && (
-                    <motion.div
-                        className="page-transition-overlay"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <motion.span
-                            className="page-transition-text"
-                            initial={{ opacity: 0, letterSpacing: '12px' }}
-                            animate={{ opacity: 1, letterSpacing: '4px' }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                        >
-                            Welcome
-                        </motion.span>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <motion.div
+                    key="dashboard"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <DashboardPage onLogout={handleLogout} />
+                  </motion.div>
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Main content */}
-            {preloaderDone && (
-                <AnimatePresence mode="wait">
-                    {!user ? (
-                        <motion.div
-                            key="auth"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                        >
-                            <CosmicBackground />
-                            <div className="auth-container">
-                                <motion.div
-                                    className="auth-brand"
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                                >
-                                    <h2 className="auth-brand-name">
-                                        <span className="primary">CareLink</span>
-                                        {' '}
-                                        <span className="accent">Bharat</span>
-                                    </h2>
-                                    <p className="auth-brand-tagline">Voice-Guided Digital Assistance</p>
-                                </motion.div>
+            <Route
+              path="/"
+              element={
+                user
+                  ? <Navigate to="/dashboard" replace />
+                  : <AuthScreen />
+              }
+            />
 
-                                <AnimatePresence mode="wait">
-                                    {!isSignup ? (
-                                        <LoginPage
-                                            key="login"
-                                            onLogin={handleLogin}
-                                            onSwitchToSignup={() => setIsSignup(true)}
-                                            users={getUsers()}
-                                        />
-                                    ) : (
-                                        <SignupPage
-                                            key="signup"
-                                            onLogin={handleLogin}
-                                            onSwitchToLogin={() => setIsSignup(false)}
-                                            users={getUsers()}
-                                            saveUsers={saveUsers}
-                                        />
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key="dashboard"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                        >
-                            <DashboardPage name={name} onLogout={handleLogout} />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            )}
-            {/* Error Fallback / No Content Safety */}
-            {!preloaderDone && (
-                <div style={{ position: 'fixed', bottom: '10px', right: '10px', fontSize: '10px', opacity: 0.3, zIndex: 10001 }}>
-                    Loading...
-                </div>
-            )}
-        </>
-    );
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
+      )}
+
+      {!preloaderDone && (
+        <div style={{ position: 'fixed', bottom: 10, right: 10, fontSize: 10, opacity: 0.3, zIndex: 10001 }}>
+          Loading...
+        </div>
+      )}
+    </>
+  );
 }

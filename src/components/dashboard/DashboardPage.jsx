@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Smartphone, Lightbulb, Building2, Mail, PartyPopper, RotateCcw } from 'lucide-react';
 
@@ -10,10 +10,11 @@ import StepsSection from './StepsSection';
 import HistoryPanel from './HistoryPanel';
 import HowToUse from './HowToUse';
 import Footer from './Footer';
+import { useAuth } from '../../context/AuthContext';
+import api from '../../lib/api';
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY;
-
-export default function DashboardPage({ name, onLogout }) {
+export default function DashboardPage({ onLogout }) {
+    const { user } = useAuth();
     const [query, setQuery] = useState('');
     const [isListening, setIsListening] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -29,7 +30,6 @@ export default function DashboardPage({ name, onLogout }) {
     const [screenStream, setScreenStream] = useState(null);
     const synthInterval = useRef(null);
 
-    const firstName = (name || '').split(' ')[0];
 
     // ── SPEECH ──
     const speak = useCallback((text) => {
@@ -81,7 +81,16 @@ export default function DashboardPage({ name, onLogout }) {
         recognition.start();
     }, [lang]);
 
-    // ── FETCH STEPS ──
+    // ── HISTORY (from backend) ──
+    const [history, setHistory] = useState([]);
+
+    useEffect(() => {
+        api.get('/query/history')
+            .then(({ data }) => setHistory(data.data.history.map(h => ({ query: h.query, time: new Date(h.createdAt).toLocaleString() }))))
+            .catch(() => {});
+    }, []);
+
+    // ── FETCH STEPS (via backend — saves to MongoDB automatically) ──
     const fetchSteps = useCallback(async (qText) => {
         const q = qText || query;
         if (!q.trim()) return;
@@ -92,39 +101,15 @@ export default function DashboardPage({ name, onLogout }) {
         setVerifyResult('');
         stopAudio();
 
-        const h = JSON.parse(localStorage.getItem('cl_history') || '[]');
-        h.unshift({ query: q, time: new Date().toLocaleString() });
-        localStorage.setItem('cl_history', JSON.stringify(h.slice(0, 20)));
-
-        const isHindi = lang === 'hi-IN';
         try {
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${GROQ_KEY}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are CareLink Bharat, a voice-guided digital assistance platform. Return ONLY a pure JSON array of strings (no markdown blocks, no formatting, no code fences). Each string should be a clear, specific, actionable step. Example: ["Step 1 text.", "Step 2 text."]. Language: ${isHindi ? 'Hindi' : 'English'}. Provide 4-6 detailed steps. Be very specific about what to tap, where to look, and what to type. Include exact UI labels, button names, and menu options.`,
-                        },
-                        { role: 'user', content: q },
-                    ],
-                    temperature: 0.2,
-                }),
-            });
-            const data = await response.json();
-            const textContent = data.choices[0].message.content;
-            const match = textContent.match(/\[[\s\S]*\]/);
-            const parsed = JSON.parse(match ? match[0] : textContent);
+            const { data } = await api.post('/query/ask', { query: q, language: lang });
+            const parsed = data.data.steps;
             setSteps(parsed);
+            setHistory(prev => [{ query: q, time: new Date().toLocaleString() }, ...prev.slice(0, 19)]);
             setTimeout(() => speak(parsed[0]), 200);
         } catch (err) {
-            console.error(err);
-            setMicStatus('Failed to load steps.');
+            const msg = err.response?.data?.message || err.message || '';
+            setMicStatus(msg.includes('quota') || msg.includes('rate') ? 'Rate limited. Please wait a moment and try again.' : 'Failed to load steps.');
         } finally {
             setLoading(false);
         }
@@ -186,54 +171,8 @@ export default function DashboardPage({ name, onLogout }) {
             // Capture actual screenshot
             const screenshotBase64 = await captureScreenshot(stream);
 
-            // Use Groq's vision model to analyze the screenshot
-            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${GROQ_KEY}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are an expert screen verification assistant for CareLink Bharat, a platform that guides users through digital tasks step-by-step.
-
-Your job is to help verify whether a user has completed a specific step correctly based on what they describe seeing on their screen.
-
-IMPORTANT RULES:
-- Be VERY specific about what the user should look for on their screen
-- Describe exact UI elements, buttons, text, colors, or indicators they should see
-- Tell them EXACTLY where on the screen to look (top-right corner, center, bottom menu, etc.)
-- If the step involves an app, describe the expected app interface state
-- Use ✅ when providing confirmation checklist items
-- Use ⚠️ for things that might indicate the step wasn't completed
-- Use 🔍 for things to double-check
-- Keep response to 4-6 bullet points maximum
-- Be encouraging but accurate
-
-Format your response as a clear verification checklist.`
-                        },
-                        {
-                            role: 'user',
-                            content: `I am working on this step: "${stepText}"
-
-I have captured my screen. Please provide me with a detailed verification checklist:
-1. What specific things should I see on my screen right now if I completed this step correctly?
-2. Where exactly should I look on the screen?
-3. What are the signs that something went wrong?
-4. What should I do next if everything looks correct?
-
-Please be very specific with UI element names, button labels, and screen locations.`
-                        },
-                    ],
-                    temperature: 0.2,
-                    max_tokens: 500,
-                }),
-            });
-            const data = await response.json();
-            const result = data.choices[0].message.content;
+            const { data } = await api.post('/query/verify', { stepText });
+            const result = data.data.verification;
 
             setVerifyResult(result);
             // Read the verification result aloud
@@ -251,8 +190,6 @@ Please be very specific with UI element names, button labels, and screen locatio
         }
     }, [screenStream, captureScreenshot, speak]);
 
-    const history = JSON.parse(localStorage.getItem('cl_history') || '[]');
-
     const exampleQueries = [
         { q: 'How to send a photo on WhatsApp', icon: <Smartphone size={16} /> },
         { q: 'How to pay electricity bill online', icon: <Lightbulb size={16} /> },
@@ -266,7 +203,7 @@ Please be very specific with UI element names, button labels, and screen locatio
 
             <div className="app-layout">
                 <Navbar
-                    firstName={firstName}
+                    user={user}
                     lang={lang}
                     onToggleLang={() => setLang(l => l === 'en-IN' ? 'hi-IN' : 'en-IN')}
                     onOpenHistory={() => setHistoryOpen(true)}
@@ -421,7 +358,10 @@ Please be very specific with UI element names, button labels, and screen locatio
                     setHistoryOpen(false);
                     fetchSteps(q);
                 }}
-                onClear={() => localStorage.setItem('cl_history', '[]')}
+                onClear={() => {
+                        api.delete('/query/history').catch(() => {});
+                        setHistory([]);
+                    }}
                 onClose={() => setHistoryOpen(false)}
             />
         </>
