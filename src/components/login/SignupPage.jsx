@@ -69,12 +69,11 @@ export default function SignupPage({ onSwitchToLogin }) {
 
   return (
     <motion.div
-      className="auth-card"
+      className="auth-card auth-card--scrollable"
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -30, scale: 0.95 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      style={{ maxHeight: '90vh', overflowY: 'auto' }}
     >
       <div className="auth-card-glow" style={{ background: 'radial-gradient(ellipse, rgba(123,104,238,0.1) 0%, transparent 70%)' }} />
 
