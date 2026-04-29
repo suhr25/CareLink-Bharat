@@ -26,7 +26,8 @@ app.use(
       env.CLIENT_URL,
       'http://localhost:5173',
       'http://localhost:3000',
-      'https://suhr25.github.io'
+      'https://suhr25.github.io',
+      'https://care-link-bharat.vercel.app'
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
