@@ -12,7 +12,7 @@ services:
       - key: PORT
         value: 10000
       - key: CLIENT_URL
-        value: https://suhr25.github.io
+        value: https://suhr25.github.io/CareLink-Bharat
       - key: COOKIE_DOMAIN
         value: onrender.com
       - key: MONGODB_URI

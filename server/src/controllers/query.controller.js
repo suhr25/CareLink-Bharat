@@ -37,9 +37,9 @@ export const askQuery = asyncHandler(async (req, res) => {
 
 // POST /query/verify
 export const verifyQuery = asyncHandler(async (req, res) => {
-  const { stepText } = req.validated;
+  const { stepText, image } = req.validated;
 
-  const result = await verifyStep(stepText);
+  const result = await verifyStep(stepText, image);
 
   return apiResponse(res, 200, { verification: result });
 });

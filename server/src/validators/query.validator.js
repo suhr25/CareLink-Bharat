@@ -7,6 +7,7 @@ export const askQuerySchema = z.object({
 
 export const verifyStepSchema = z.object({
   stepText: z.string().trim().min(1, 'Step text is required').max(2000),
+  image: z.string().startsWith('data:image').optional(),
 });
 
 export const updateProgressSchema = z.object({

@@ -171,7 +171,10 @@ export default function DashboardPage({ onLogout }) {
             // Capture actual screenshot
             const screenshotBase64 = await captureScreenshot(stream);
 
-            const { data } = await api.post('/query/verify', { stepText });
+            const { data } = await api.post('/query/verify', { 
+                stepText, 
+                image: screenshotBase64 
+            });
             const result = data.data.verification;
 
             setVerifyResult(result);
