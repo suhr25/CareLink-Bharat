@@ -23,11 +23,11 @@ const start = async () => {
   });
 
   // Graceful shutdown
-  const shutdown = (signal) => {
+  const shutdown = (signal, exitCode = 0) => {
     logger.info(`${signal} received — shutting down gracefully`);
     server.close(() => {
       logger.info('Server closed');
-      process.exit(0);
+      process.exit(exitCode);
     });
     setTimeout(() => {
       logger.error('Forced shutdown after timeout');
@@ -35,12 +35,17 @@ const start = async () => {
     }, 10000);
   };
 
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM', 0));
+  process.on('SIGINT', () => shutdown('SIGINT', 0));
 
   process.on('unhandledRejection', (err) => {
     logger.error('Unhandled rejection:', err);
-    shutdown('UNHANDLED_REJECTION');
+    shutdown('UNHANDLED_REJECTION', 1);
+  });
+
+  process.on('uncaughtException', (err) => {
+    logger.error('Uncaught exception:', err);
+    shutdown('UNCAUGHT_EXCEPTION', 1);
   });
 };
 

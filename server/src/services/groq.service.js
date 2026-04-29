@@ -18,11 +18,12 @@ export const generateSteps = async (query, language = 'en-IN') => {
       messages: [
         {
           role: 'system',
-          content: `You are CareLink Bharat, a voice-guided digital assistance platform. Return ONLY a pure JSON array of strings (no markdown blocks, no formatting, no code fences). Each string should be a clear, specific, actionable step. Example: ["Step 1 text.", "Step 2 text."]. Language: ${isHindi ? 'Hindi' : 'English'}. Provide 4-6 detailed steps. Be very specific about what to tap, where to look, and what to type. Include exact UI labels, button names, and menu options.`,
+          content: `You are CareLink Bharat, a voice-guided digital assistance platform. Return ONLY a JSON object with a single key "steps" containing an array of strings. Example: { "steps": ["Step 1 text.", "Step 2 text."] }. Language: ${isHindi ? 'Hindi' : 'English'}. Provide 4-6 detailed steps. Be very specific about what to tap, where to look, and what to type. Include exact UI labels, button names, and menu options.`,
         },
         { role: 'user', content: query },
       ],
       temperature: 0.2,
+      response_format: { type: 'json_object' },
     }),
   });
 
@@ -38,14 +39,18 @@ export const generateSteps = async (query, language = 'en-IN') => {
   const data = await response.json();
   const textContent = data.choices[0].message.content;
 
-  const match = textContent.match(/\[[\s\S]*\]/);
-  const parsed = JSON.parse(match ? match[0] : textContent);
+  try {
+    const parsed = JSON.parse(textContent);
+    
+    if (!parsed.steps || !Array.isArray(parsed.steps)) {
+      throw new Error('Missing steps array in JSON');
+    }
 
-  if (!Array.isArray(parsed)) {
+    return parsed.steps;
+  } catch (err) {
+    logger.error('Groq parsing error:', err.message, textContent);
     throw new AppError('Invalid response from AI service', 502);
   }
-
-  return parsed;
 };
 
 export const verifyStep = async (stepText) => {
