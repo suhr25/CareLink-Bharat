@@ -146,8 +146,8 @@ export default function DashboardPage({ onLogout }) {
         video.pause();
         video.srcObject = null;
 
-        // Get base64 image (JPEG for smaller size)
-        return canvas.toDataURL('image/jpeg', 0.7);
+        // Get base64 image (JPEG for high quality text parsing)
+        return canvas.toDataURL('image/jpeg', 0.9);
     }, []);
 
     const verifyScreen = useCallback(async (stepText) => {
