@@ -22,7 +22,12 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: [env.CLIENT_URL, 'http://localhost:5173', 'http://localhost:3000'],
+    origin: [
+      env.CLIENT_URL,
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://suhr25.github.io'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
