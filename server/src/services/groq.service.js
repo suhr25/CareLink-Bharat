@@ -29,11 +29,15 @@ export const generateSteps = async (query, language = 'en-IN') => {
 
   if (!response.ok) {
     const errBody = await response.json().catch(() => ({}));
-    logger.error('Groq API error:', { status: response.status, body: errBody });
-    throw new AppError(
-      errBody?.error?.message || `AI service error (${response.status})`,
-      502
-    );
+    const groqMsg = errBody?.error?.message || '';
+    logger.error('Groq API error:', { status: response.status, model: env.GROQ_MODEL, body: errBody });
+    if (response.status === 401) {
+      throw new AppError('Invalid Groq API Key — update GROQ_API_KEY in environment settings', 502);
+    }
+    if (response.status === 400 && groqMsg.toLowerCase().includes('model')) {
+      throw new AppError(`Model "${env.GROQ_MODEL}" is unavailable or deprecated — update GROQ_MODEL`, 502);
+    }
+    throw new AppError(groqMsg || `AI service error (${response.status})`, 502);
   }
 
   const data = await response.json();
@@ -54,8 +58,7 @@ export const generateSteps = async (query, language = 'en-IN') => {
 };
 
 export const verifyStep = async (stepText, image = null) => {
-  // If an image is provided, we MUST use a vision model.
-  const model = image ? 'llama-3.2-90b-vision-preview' : env.GROQ_MODEL;
+  const model = image ? env.GROQ_VISION_MODEL : env.GROQ_MODEL;
 
   const userContent = [];
   
@@ -110,8 +113,15 @@ CRITICAL RULES:
 
   if (!response.ok) {
     const errBody = await response.json().catch(() => ({}));
-    logger.error('Groq verify error:', { status: response.status, body: errBody });
-    throw new AppError('Verification service unavailable', 502);
+    const groqMsg = errBody?.error?.message || '';
+    logger.error('Groq verify error:', { status: response.status, model, body: errBody });
+    if (response.status === 401) {
+      throw new AppError('Invalid Groq API Key — update GROQ_API_KEY in environment settings', 502);
+    }
+    if (response.status === 400 && groqMsg.toLowerCase().includes('model')) {
+      throw new AppError(`Vision model "${model}" is unavailable or deprecated — update GROQ_VISION_MODEL`, 502);
+    }
+    throw new AppError(groqMsg || 'Verification service unavailable', 502);
   }
 
   const data = await response.json();

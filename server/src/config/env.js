@@ -24,6 +24,7 @@ const envSchema = z.object({
 
   GROQ_API_KEY: z.string().min(1, 'GROQ_API_KEY is required'),
   GROQ_MODEL: z.string().default('llama-3.3-70b-versatile'),
+  GROQ_VISION_MODEL: z.string().default('llama-3.2-90b-vision-preview'),
 
   REDIS_URL: z.string().default('redis://localhost:6379'),
 

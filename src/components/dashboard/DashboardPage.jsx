@@ -108,8 +108,17 @@ export default function DashboardPage({ onLogout }) {
             setHistory(prev => [{ query: q, time: new Date().toLocaleString() }, ...prev.slice(0, 19)]);
             setTimeout(() => speak(parsed[0]), 200);
         } catch (err) {
+            const status = err.response?.status;
             const msg = err.response?.data?.message || err.message || '';
-            setMicStatus(msg.includes('quota') || msg.includes('rate') ? 'Rate limited. Please wait a moment and try again.' : 'Failed to load steps.');
+            if (msg.includes('quota') || msg.includes('rate') || status === 429) {
+                setMicStatus('Rate limited. Please wait a moment and try again.');
+            } else if (status === 502 || msg.toLowerCase().includes('ai service') || msg.toLowerCase().includes('invalid api key')) {
+                setMicStatus('AI service unavailable. Please try again shortly.');
+            } else if (!navigator.onLine || msg.toLowerCase().includes('network') || msg.toLowerCase().includes('failed to fetch')) {
+                setMicStatus('Network error. Check your connection and try again.');
+            } else {
+                setMicStatus(msg ? `Error: ${msg}` : 'Failed to load steps. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
