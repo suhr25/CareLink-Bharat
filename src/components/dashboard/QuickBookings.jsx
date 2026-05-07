@@ -9,9 +9,6 @@ import GalaxyBackground from '../three/GalaxyBackground';
 import Navbar from './Navbar';
 import { useAuth } from '../../context/AuthContext';
 
-// ─── Booking data ──────────────────────────────────────────────────────────────
-// To add a new category: push a new object to CATEGORIES with id/label/Icon/color/colorRgb/platforms.
-// To add a platform: push to the relevant category's platforms array.
 const CATEGORIES = [
   {
     id: 'train',
@@ -110,7 +107,7 @@ const CATEGORIES = [
   },
   {
     id: 'medicine',
-    label: 'Medicines',
+    label: 'Order Medicines',
     Icon: Pill,
     color: '#34D399',
     colorRgb: '52,211,153',
@@ -137,7 +134,6 @@ const CATEGORIES = [
   },
 ];
 
-// Flat lookup map for resolving saved platform details (used by Favorites tab)
 const PLATFORM_MAP = Object.fromEntries(
   CATEGORIES.flatMap(cat => cat.platforms.map(p => [p.id, { ...p, cat }]))
 );
@@ -148,7 +144,6 @@ const TABS = [
   { id: 'favorites', label: 'Saved' },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function QuickBookings({ onLogout }) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -205,8 +200,8 @@ export default function QuickBookings({ onLogout }) {
         <Navbar
           user={user}
           lang="en-IN"
-          onToggleLang={() => {}}
-          onOpenHistory={() => {}}
+          onToggleLang={() => { }}
+          onOpenHistory={() => { }}
           onLogout={onLogout}
           onBack={() => navigate('/dashboard')}
         />
