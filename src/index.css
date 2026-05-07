@@ -2073,3 +2073,392 @@ canvas {
 .npd-logout:hover {
     background: rgba(239, 68, 68, 0.08);
 }
+
+/* ── QUICK BOOKINGS ─────────────────────────────────────────── */
+.qb-main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.qb-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.qb-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.qb-subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.qb-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 40px;
+}
+
+.qb-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.qb-search-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+    flex-shrink: 0;
+}
+
+.qb-search {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    padding: 12px 44px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-primary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+}
+
+.qb-search::placeholder {
+    color: var(--text-muted);
+}
+
+.qb-search::-webkit-search-cancel-button {
+    display: none;
+}
+
+.qb-search:focus {
+    border-color: var(--border-active);
+    box-shadow: 0 0 0 3px rgba(86, 200, 216, 0.08);
+}
+
+.qb-search-clear {
+    position: absolute;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.qb-search-clear:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.qb-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+.qb-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 16px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--glass-border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.qb-tab:hover {
+    color: var(--text-primary);
+    border-color: var(--border-active);
+}
+
+.qb-tab.active {
+    background: rgba(86, 200, 216, 0.10);
+    border-color: var(--border-active);
+    color: var(--primary);
+}
+
+.qb-tab--fav.active {
+    background: rgba(240, 160, 80, 0.10);
+    border-color: rgba(240, 160, 80, 0.35);
+    color: var(--accent);
+}
+
+.qb-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--radius-full);
+    background: rgba(240, 160, 80, 0.18);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.qb-tab:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.qb-section {
+    margin-bottom: 48px;
+}
+
+.qb-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.qb-section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.qb-section-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.qb-section-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+}
+
+.qb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.qb-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    transition: border-color 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+}
+
+.qb-card:hover {
+    border-color: rgba(var(--rgb, 86, 200, 216), 0.30);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(var(--rgb, 86, 200, 216), 0.08);
+}
+
+.qb-badge {
+    position: absolute;
+    top: -9px;
+    left: 16px;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, var(--primary), var(--purple));
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--bg-deep);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.qb-fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    z-index: 2;
+}
+
+.qb-fav-btn:hover {
+    color: var(--accent);
+    border-color: rgba(240, 160, 80, 0.4);
+    background: rgba(240, 160, 80, 0.08);
+}
+
+.qb-fav-btn.active {
+    color: var(--accent);
+    border-color: rgba(240, 160, 80, 0.45);
+    background: rgba(240, 160, 80, 0.12);
+}
+
+.qb-fav-btn.active svg {
+    fill: var(--accent);
+}
+
+.qb-fav-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.qb-card-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 16px;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: background 0.18s;
+}
+
+.qb-card-link:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.qb-card-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+    border-radius: var(--radius-md);
+}
+
+.qb-card-icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.qb-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.qb-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qb-card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qb-card-arrow {
+    color: var(--text-dim);
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.qb-card-link:hover .qb-card-arrow {
+    color: var(--c, var(--primary));
+    transform: translate(2px, -2px);
+}
+
+.qb-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 80px 24px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.qb-empty svg {
+    opacity: 0.3;
+}
+
+.qb-empty p {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.qb-empty span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+    .qb-main {
+        padding: 24px 16px 60px;
+    }
+
+    .qb-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 900px) {
+    .qb-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .qb-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

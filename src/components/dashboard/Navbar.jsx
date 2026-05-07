@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, History, LogOut, Zap, ChevronDown } from 'lucide-react';
+import { Globe, History, LogOut, Zap, ChevronDown, BookOpen, ArrowLeft } from 'lucide-react';
 
-export default function Navbar({ user, lang, onToggleLang, onOpenHistory, onLogout }) {
+export default function Navbar({ user, lang, onToggleLang, onOpenHistory, onLogout, onOpenBookings, onBack }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -41,6 +41,32 @@ export default function Navbar({ user, lang, onToggleLang, onOpenHistory, onLogo
       </div>
 
       <div className="nav-actions">
+        {onBack && (
+          <motion.button
+            className="nav-btn"
+            onClick={onBack}
+            title="Back to Dashboard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ArrowLeft size={16} />
+            <span>Dashboard</span>
+          </motion.button>
+        )}
+
+        {onOpenBookings && (
+          <motion.button
+            className="nav-btn"
+            onClick={onOpenBookings}
+            title="Quick Bookings"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <BookOpen size={16} />
+            <span>Bookings</span>
+          </motion.button>
+        )}
+
         {/* Profile chip with dropdown */}
         <div className="nav-profile-wrapper" ref={dropdownRef}>
           <motion.button

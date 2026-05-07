@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Mic, Smartphone, Lightbulb, Building2, Mail, PartyPopper, RotateCcw } from 'lucide-react';
 
 import GalaxyBackground from '../three/GalaxyBackground';
@@ -15,6 +16,7 @@ import api from '../../lib/api';
 
 export default function DashboardPage({ onLogout }) {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [query, setQuery] = useState('');
     const [isListening, setIsListening] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -220,6 +222,7 @@ export default function DashboardPage({ onLogout }) {
                     onToggleLang={() => setLang(l => l === 'en-IN' ? 'hi-IN' : 'en-IN')}
                     onOpenHistory={() => setHistoryOpen(true)}
                     onLogout={onLogout}
+                    onOpenBookings={() => navigate('/quick-bookings')}
                 />
 
                 <main>

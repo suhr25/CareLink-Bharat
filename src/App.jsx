@@ -7,6 +7,7 @@ import CosmicBackground from './components/three/CosmicBackground';
 import LoginPage from './components/login/LoginPage';
 import SignupPage from './components/login/SignupPage';
 import DashboardPage from './components/dashboard/DashboardPage';
+import QuickBookings from './components/dashboard/QuickBookings';
 import GoogleCallback from './components/auth/GoogleCallback';
 import { useAuth } from './context/AuthContext';
 
@@ -139,6 +140,23 @@ export default function App() {
                     transition={{ duration: 0.4 }}
                   >
                     <DashboardPage onLogout={handleLogout} />
+                  </motion.div>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/quick-bookings"
+              element={
+                <ProtectedRoute>
+                  <motion.div
+                    key="quick-bookings"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <QuickBookings onLogout={handleLogout} />
                   </motion.div>
                 </ProtectedRoute>
               }
